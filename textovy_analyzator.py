@@ -30,63 +30,68 @@ garpike and stingray are also present.'''
 
 ODDELOVAC = "-" * 40
 print(ODDELOVAC)
-print("Vítejte v našem textovém analyzátoru. Prosím zadejte přihlašovací údaje:")
-REGISTROVANI = {"bob": "123", "ann": "pass123", "mike": "password123", "liz": "pass123"}
+print("Vítejte v našem textovém analyzátoru. "
+      "Prosím zadejte přihlašovací údaje:")
+REGISTROVANI = {"bob": "123",
+                "ann": "pass123",
+                "mike": "password123",
+                "liz": "pass123"}
 prepinac = True
 while prepinac:
-    USERNAME = input("USERNAME: ")
-    HESLO = input("HESLO: ")
-    if USERNAME in REGISTROVANI:
-        kontrola = REGISTROVANI[USERNAME]
-        if kontrola == HESLO:
-            prepinac = False
-        else:
-            print("Zadané heslo není správné.")
+    username = input("USERNAME: ")
+    heslo = input("HESLO: ")
+    if username in REGISTROVANI and heslo == REGISTROVANI[username]:
+        prepinac = False
     else:
-        print("Uživatel nenalezen.")
+        print("Neexistující uživatel nebo špatně zadané heslo.")
 print(ODDELOVAC)
 print(f"Počet textů v nabídce: {len(TEXTS)}")
 print(f"Vyberte text pro analýzu (číslo od 1 do {len(TEXTS)}): ", end="")
-VOLBA = int(input())
-
-while 0 >= VOLBA or VOLBA > len(TEXTS):
-    print("Zvolené číslo textu nemáme v nabídce.")
-    print(f"Vyberte text (číslo od 1 do {len(TEXTS)}): ", end="")
+try:
     VOLBA = int(input())
 
-print(ODDELOVAC)
-index = VOLBA - 1
-TEXT = TEXTS[index]
-OCISTENY_TEXT = TEXT.strip(".,").split()
-print(f"V textu se nachází {len(OCISTENY_TEXT)} slov.")
+    while 0 >= VOLBA or VOLBA > len(TEXTS):
+        print("Zvolené číslo textu nemáme v nabídce.")
+        print(f"Vyberte text (číslo od 1 do {len(TEXTS)}): ", end="")
+        VOLBA = int(input())
 
-SLOVA_VELKYM = []     # slova začínající velkým písmenem
-VELKA_PISMENA = []    # slova psaná velkými písmeny
-MALA_PISMENA = []     # slova psaná malými písmeny
-POCET_CISEL = []
-for slovo in OCISTENY_TEXT:
-    if slovo.istitle() or slovo.isupper():
-        SLOVA_VELKYM.append(slovo)
-    if slovo.isupper():
-        VELKA_PISMENA.append(slovo)
-    if slovo.islower():
-        MALA_PISMENA.append(slovo)
-    if slovo.isdigit():
-        POCET_CISEL.append(int(slovo))
-print(f"V textu se nachází {len(SLOVA_VELKYM)} slov začínajících velkým písmenem.")
-print(f"V textu se nachází {len(VELKA_PISMENA)} slov psaných velkými písmeny.")
-print(f"V textu se nachází {len(MALA_PISMENA)} slov psaných malými písmeny.")
-print(f"V textu se nachází {len(POCET_CISEL)} číselných stringů.")
-print(ODDELOVAC)
+    print(ODDELOVAC)
+    index = VOLBA - 1
+    TEXT = TEXTS[index]
+    OCISTENY_TEXT = [slovo.strip(".,") for slovo in TEXT.split()]
+    print(f"V textu se nachází {len(OCISTENY_TEXT)} slov.")
 
-VYSKYT = {}
-for slovo in OCISTENY_TEXT:
-    POCET_PISMEN = len(slovo)
-    VYSKYT[POCET_PISMEN] = VYSKYT.get(POCET_PISMEN, 0) + 1
-SERAZENY_VYSKYT = sorted(VYSKYT.items())
+    slova_velkym = []
+    velka_pismena = []
+    mala_pismena = []
+    pocet_cisel = []
+    vyskyt = {}
+    for slovo in OCISTENY_TEXT:
+        POCET_PISMEN = len(slovo)
+        vyskyt[POCET_PISMEN] = vyskyt.get(POCET_PISMEN, 0) + 1
+        if slovo.istitle() or slovo.isupper():
+            slova_velkym.append(slovo)
+        elif slovo.isupper():
+            velka_pismena.append(slovo)
+        elif slovo.islower():
+            mala_pismena.append(slovo)
+        elif slovo.isdigit():
+            pocet_cisel.append(int(slovo))
+    print(f"V textu se nachází {len(slova_velkym)} "
+          f"slov začínajících velkým písmenem.")
+    print(f"V textu se nachází {len(velka_pismena)} "
+          f"slov psaných velkými písmeny.")
+    print(f"V textu se nachází {len(mala_pismena)} "
+          f"slov psaných malými písmeny.")
+    print(f"V textu se nachází {len(pocet_cisel)} "
+          f"číselných stringů.")
+    print(ODDELOVAC)
 
-for pocet_pismen, pocet_slov in SERAZENY_VYSKYT:
-    print(pocet_pismen, ("*" * pocet_slov), pocet_slov)
-print(ODDELOVAC)
-print(f"Součet všech čísel v textu je: {sum(POCET_CISEL)}.")
-print(ODDELOVAC)
+    SERAZENY_VYSKYT = sorted(vyskyt.items())
+    for pocet_pismen, pocet_slov in SERAZENY_VYSKYT:
+        print(pocet_pismen, ("*" * pocet_slov), pocet_slov)
+    print(ODDELOVAC)
+    print(f"Součet všech čísel v textu je: {sum(pocet_cisel)}.")
+    print(ODDELOVAC)
+except ValueError:
+    print("Zadávej číslice")
